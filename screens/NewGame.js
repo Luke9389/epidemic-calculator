@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
     Button,
     FlatList,
@@ -16,59 +16,47 @@ import {
     StatusBar,
     StyleSheet,
     Text,
+    TouchableOpacity,
     useColorScheme,
     View,
 } from 'react-native';
- 
-const NewGame = ({navigation}) => {
+
+const numPlayersData = [
+    {
+        id: '2',
+        title: '2',
+    },
+    {
+        id: '3',
+        title: '3',
+    },
+    {
+        id: '4',
+        title: '4',
+    },
+];
+
+const Item = ({ item, onPress, backgroundColor, textColor }) => (
+    <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
+    <Text style={[styles.title, textColor]}>{item.title}</Text>
+    </TouchableOpacity>
+);
+
+const NewGame = () => {
     const isDarkMode = useColorScheme() === 'dark';
-
-    const styles = StyleSheet.create({
-        title: {
-        fontSize: 50,
-        color: 'green',
-        fontWeight: '900',
-        marginBottom: 20,
-        },
-        question: {
-            fontSize: 30,
-            color: 'green',
-        },
-        mainView: {
-        padding: 40
-        },
-        container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor: 'black',
-        },
-    })
- 
-    const numPlayersData = [
-        {
-            id: 1,
-            title: '1',
-        }
-    ];
-
-    const Item = ({ item, onPress, backgroundColor, textColor }) => (
-        <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-            <Text style={[styles.title, textColor]}>{item.title}</Text>
-        </TouchableOpacity>
-    );
+    const [numPlayers, setNumPlayers] = useState(null);
 
     const renderItem = ({item}) => {
-        const backgroundColor = item.id === selectedId ? 'red' : 'blue';
+        const backgroundColor = item.id === numPlayers ? 'red' : 'blue';
         const color = 'white';
 
         return (
-            <Item>
+            <Item
                 item={item}
-                onPress={() => setSelectedId(item.id)}
+                onPress={() => setNumPlayers(item.id)}
                 backgroundColor={{ backgroundColor }}
                 textColor={{ color }}
-            </Item>
+            />
         );
     };
 
@@ -81,10 +69,35 @@ const NewGame = ({navigation}) => {
                 <FlatList
                     data={numPlayersData}
                     renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    extraData={numPlayers}
+                    horizontal={true}
                 />
             </View>
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    title: {
+        fontSize: 50,
+        color: 'green',
+        fontWeight: '900',
+        marginBottom: 20,
+    },
+    question: {
+        fontSize: 30,
+        color: 'green',
+    },
+    mainView: {
+        padding: 40
+    },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: 'black',
+    },
+});
 
 export default NewGame;
